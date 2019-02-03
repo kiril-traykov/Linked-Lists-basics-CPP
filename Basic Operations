@@ -1,0 +1,160 @@
+#include <iostream>
+
+using namespace std;
+
+struct List
+{
+
+	int info;
+
+	struct List* link;
+
+};
+
+void printlist(struct List *n); // Prints the current Linked List
+void addatbeg(struct List **head, int data); // Add a node at the beggining
+void push(struct List*previous, int data); // Inserts a node 
+void addatend(struct List **node, int data); // Add node at the end
+struct List *getNnode(struct List *head,int n); //Get node at 'n' position
+void deletenode(struct List**head, int position); // Delete node
+int getlenght(struct List*node); //Returns lenght of the Linked list
+int main() 
+{
+	struct List *head = NULL;
+	int n = 5;
+
+	for (int i = 0; i < 10; i++) {
+		addatbeg(&head, rand() % 10);
+	}
+	printlist(head);
+
+	push(head->link->link, 5);
+
+	printlist(head);
+
+	addatend(&head, 20);
+
+	printlist(head);
+
+	auto newnode = getNnode(head, n);
+	cout <<n<<"th element of the linked list: " <<  newnode->info << endl;
+
+	deletenode(&head, n);
+
+	printlist(head);
+
+	cout << "Lenght of linked list = " << getlenght(head);
+
+}
+
+void printlist(struct List *n) {
+
+	while (n != NULL) {
+		cout << n->info << '\t';
+		n = n->link;
+	}
+	cout << endl;
+}
+
+void addatbeg(struct List **head, int data) {
+
+	struct List *tmp = new struct List[sizeof(struct List)];
+
+	tmp->info = data;
+
+	if (*head == NULL) {
+		tmp->link = NULL;
+		*head = tmp;
+	}
+	else {
+		tmp->link = *head;
+		*head = tmp;
+	}
+}
+
+void push(struct List* previous, int data) {
+
+	struct List*tmp = new struct List[sizeof(struct List)];
+	tmp->info = data;
+
+	if (previous == NULL) {
+		cout << "Cannot insert element here. ";
+		return;
+	}
+	
+	tmp->link = previous->link;
+	previous->link = tmp;
+
+}
+
+void addatend(struct List **node, int data) {
+
+	struct List * tmp = new struct List[sizeof(struct List)];
+	tmp->info = data;
+	tmp->link = NULL;
+	auto last = *node;
+	if (*node == NULL) {
+		*node = tmp;
+		return;
+	}
+	while(last->link != NULL){
+		last = last->link;
+	}
+	last->link = tmp;
+}
+
+struct List *getNnode(struct List *head, int n) {
+
+	auto tmp = head;
+	int position = 0;
+	while (tmp != NULL) {
+		if (position == n) {
+			return tmp;
+		}
+		tmp = tmp->link;
+		position++;
+	}
+	cout << "Node at position " << n << " could not be reached" << endl;
+	return tmp;
+}
+
+void deletenode(struct List**head, int position) {
+
+	if (*head == NULL) {
+		return;
+	}
+
+	auto tmp = *head;
+	auto prev = tmp;
+	int cnt = 0;
+
+	if (position == 0) {
+
+		*head = tmp->link;
+		delete tmp;
+		return;
+	}
+
+	while (tmp != NULL) {
+		
+		if (cnt == position) {
+			prev->link = tmp->link;
+			tmp->link = NULL;
+			delete tmp;
+			return;
+		}
+		prev = tmp;
+		cnt++;
+		tmp = tmp->link;
+	}
+
+}
+
+int getlenght(struct List*node) {
+	int cnt = 0;
+	while (node != NULL) {
+		cnt++;
+		node = node->link;
+	}
+	return cnt;
+}
