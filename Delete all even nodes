@@ -1,0 +1,90 @@
+#include <iostream>
+
+using namespace std;
+
+struct List {
+	int info;
+	struct List *link;
+};
+
+
+void printlist(struct List *n);
+void fill(struct List **head, int data);
+void deleteeven(struct List **head);
+
+int main() {
+	
+	struct List *head = NULL;
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		fill(&head, rand() % 10);
+	}
+	
+
+	cout << "List before purging the even numbers: " << endl;
+		printlist(head);
+		cout << "List after purging the even numbers: " << endl;
+		deleteeven(&head);
+		printlist(head);
+
+}
+
+void printlist(struct List *n) {
+
+	while (n != NULL) {
+		cout << n->info << '\t';
+		n = n->link;
+	}
+	cout << endl;
+}
+
+void fill(struct List **head, int data) {
+
+	struct List *tmp = new struct List[sizeof(struct List)];
+
+	tmp->info = data;
+
+	if (*head == NULL) {
+		tmp->link = NULL;
+		*head = tmp;
+	}
+	else {
+		tmp->link = *head;
+		*head = tmp;
+	}
+}
+
+void deleteeven(struct List **head) {
+
+	int position = 0;
+
+	auto tmp = *head;
+	auto prev = tmp;
+	bool arethereevens = true;
+	while (arethereevens) {
+		arethereevens = false;
+		tmp = *head;
+		while (tmp != NULL)
+		{
+			if (tmp->info % 2 == 0) {
+				arethereevens = true;
+				if (position == 0) {
+					*head = tmp->link;
+					delete tmp;
+					break;
+				}
+
+				prev->link = tmp->link;
+				tmp->link = NULL;
+				delete tmp;
+				break;
+
+			}
+			position++;
+			prev = tmp;
+			tmp = tmp->link;
+		}
+	}
+
+}
